@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter
 class ParserService {
     static parser_api = "http://localhost:3001"
 //    static parser_api = "http://gsmarena-api.herokuapp.com"
-    static supported_brands = ["Samsung"/*, "Apple", "Google"*/]
+    static supported_brands = ["Samsung","Apple","Google"]
     static jsonSlurper = new JsonSlurper()
 
     int parse_phones(){
@@ -21,11 +21,12 @@ class ParserService {
         // get the response code - automatically sends the request
         def resp = connection.inputStream.text
         def brands = jsonSlurper.parseText(resp)
-
+//        println brands
         brands.each { brand ->
 
+//            println brand.name
+
             if (brand.name in supported_brands) {
-//                println brand
                 Brand my_brand = new Brand(name: brand.name, url: brand.url)
                 my_brand.save()
 //                println my_brand
@@ -56,7 +57,7 @@ class ParserService {
             println device
             def my_device = Phone.findByUrl(device.url)
             if(my_device){
-                println 'Device already parsed: ' + my_device
+                println 'Device alrleady in db. Skipping...'
                 return
             }
 //            sleep(10000) // to avoid IP blocking

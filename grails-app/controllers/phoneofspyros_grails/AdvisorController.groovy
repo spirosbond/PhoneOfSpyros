@@ -141,6 +141,23 @@ class AdvisorController {
                         break
                     case FeatureNames.screen_tech:
                         break
+                    case 'brand':
+                        def brands = params.get(key)?.split(',')
+                        println "brands: " + brands
+                        brands?.each { b ->
+                            println "brand: " + b
+                            phones_filter += (Phone.createCriteria().listDistinct {
+                                brand {
+                                    and {
+                                        ilike "name", b
+//                                        ilike "value_str", "%" + os + "%"
+                                    }
+                                }
+
+
+                            })
+                        }
+                        break
                     default:
                         break
                 }
@@ -150,7 +167,7 @@ class AdvisorController {
                     println "first param"
                     phones_result = phones_filter
                     println phones_result
-                } else if (phones_filter.size() > 0) {
+                } else if (phones_filter.size() >= 0) {
                     println "filter down: " + phones_filter
                     phones_result = phones_result.findAll {phones_filter.contains(it)}
                     println phones_result
@@ -256,6 +273,8 @@ class AdvisorController {
                 return FeatureNames.screen_hz
             case FeatureNames.screen_tech.toString():
                 return FeatureNames.screen_tech
+            case 'brand':
+                return 'brand'
             default:
                 return ""
         }
